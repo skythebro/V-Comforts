@@ -8,6 +8,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Transforms;
 using VAMP;
+using VampireCommandFramework;
 
 namespace VrisingQoL;
 
@@ -129,5 +130,52 @@ public static class ItemUtil
             }
         }
         return result;
+    }
+    
+    public static bool TryConsumeRequiredItems(ChatCommandContext ctx, out string message)
+    {
+        try
+        {
+            var requiredItemPrefabGuid = new PrefabGUID(Settings.RESPAWN_POINT_COST_ITEM_PREFAB.Value);
+            var characterEntity = ctx.Event.SenderCharacterEntity;
+            int totalSlots = InventoryUtilities.GetInventorySize(Core.EntityManager, characterEntity);
+            var totalItemsToRemove = Settings.RESPAWN_POINT_COST_AMOUNT.Value;
+
+            for (int i = 0; i < totalSlots; i++)
+            {
+                if (InventoryUtilities.TryGetItemAtSlot(Core.EntityManager, characterEntity, i, out var item))
+                {
+                    if (item.ItemType == requiredItemPrefabGuid)
+                    {
+                        if (item.Amount >= totalItemsToRemove)
+                        {
+                            InventoryUtilitiesServer.TryRemoveItemAtIndex(Core.EntityManager, characterEntity, item.ItemType, totalItemsToRemove, i, false);
+                            totalItemsToRemove = 0;
+                            break;
+                        }
+                        else
+                        {
+                            InventoryUtilitiesServer.TryRemoveItemAtIndex(Core.EntityManager, characterEntity, item.ItemType, item.Amount, i, true);
+                            totalItemsToRemove -= item.Amount;
+                        }
+                    }
+                }
+            }
+
+            if (totalItemsToRemove > 0)
+            {
+                message = $"You do not have enough of {requiredItemPrefabGuid.GetNamePrefab()} to spawn a respawn point.";
+                AddItemToInventory(characterEntity, requiredItemPrefabGuid, Settings.RESPAWN_POINT_COST_AMOUNT.Value - totalItemsToRemove);
+                return false;
+            }
+
+            message = string.Empty;
+            return true;
+        }
+        catch (Exception ex)
+        {
+            message = $"An error occurred while checking inventory: {ex.Message}";
+            return false;
+        }
     }
 }
