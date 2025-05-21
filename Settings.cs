@@ -1,4 +1,6 @@
-﻿using BepInEx.Configuration;
+﻿using System.Collections.Generic;
+using System.Linq;
+using BepInEx.Configuration;
 
 namespace VrisingQoL
 {
@@ -7,6 +9,13 @@ namespace VrisingQoL
 		public static ConfigEntry<bool> ENABLE_BLOODMIXER_EXTRA_BOTTLE { get; private set; }
 		public static ConfigEntry<bool> ENABLE_AUTOFISH { get; private set; }
 		public static ConfigEntry<bool> ENABLE_CARRIAGE_TRACKING { get; private set; }
+		public static ConfigEntry<bool> ENABLE_LEVEL_BONUS { get; private set; }
+		public static ConfigEntry<string> LEVEL_BONUS_MULTIPLIER_STRING { get; private set; }
+		public static List<float> LEVEL_BONUS_MULTIPLIER { get; private set; }
+
+		public static ConfigEntry<bool> ENABLE_INVENTORY_BONUS { get; private set; }
+		public static ConfigEntry<string> BAG_INVENTORY_BONUS_MULTIPLIER_STRING { get; private set; }
+		public static List<float> BAG_INVENTORY_BONUS_MULTIPLIER { get; private set; }
 
 		public static ConfigEntry<bool> ENABLE_RESPAWN_POINTS { get; private set; }
 		public static ConfigEntry<bool> ENABLE_NONADMIN_RESPAWNPOINT_SPAWNING { get; private set; }
@@ -17,6 +26,7 @@ namespace VrisingQoL
 		public static ConfigEntry<int> RESPAWN_POINT_PREFAB { get; private set; }
 		public static ConfigEntry<int> RESPAWN_TRAVEL_DELAY_PREFAB { get; private set; }
 		public static ConfigEntry<int> RESPAWN_POINT_LIMIT { get; private set; }
+		
 
 		internal static void Initialize(ConfigFile config)
 		{
@@ -24,7 +34,18 @@ namespace VrisingQoL
 			ENABLE_AUTOFISH = config.Bind<bool>("Fishing", "enableAutoFish", true, "If enabled fish will automatically be caught whenever a splash happens");
 			ENABLE_CARRIAGE_TRACKING = config.Bind<bool>("Carriage", "enableCarriageTracking", false, "If enabled carriages will be tracked and shown on the map.");
 			
-			
+			ENABLE_LEVEL_BONUS = config.Bind<bool>("LevelBonus", "enableLevelBonus", true, "If enabled you will get a bonus to your stats based on your level, value defined below.");
+			LEVEL_BONUS_MULTIPLIER_STRING = config.Bind<string>("LevelBonus", "levelBonusMultiplier", "0.005,0.003,0.0035", "Sets the level bonus multiplier per level for each stat in the following order: resourceYieldBonus, moveSpeedBonus, shapeshiftMoveSpeedBonus");
+			LEVEL_BONUS_MULTIPLIER = LEVEL_BONUS_MULTIPLIER_STRING.Value
+				.Split(',')
+				.Select(s => float.Parse(s.Trim(), System.Globalization.CultureInfo.InvariantCulture))
+				.ToList();
+			ENABLE_INVENTORY_BONUS = config.Bind<bool>("InventoryBonus", "enableInventoryBonus", true, "If enabled you will get a bonus to your inventory stack size based on your equipped bag, value defined below.");
+			BAG_INVENTORY_BONUS_MULTIPLIER_STRING = config.Bind<string>("InventoryBonus", "bagInventoryBonusMultiplier", "1.05,1.15,1.3,1.5,1.75,2.5", "Sets the inventory bonus multiplier per level for each bag in the following order: resourceYieldBonus, moveSpeedBonus, shapeshiftMoveSpeedBonus");
+			BAG_INVENTORY_BONUS_MULTIPLIER = BAG_INVENTORY_BONUS_MULTIPLIER_STRING.Value
+				.Split(',')
+				.Select(s => float.Parse(s.Trim(), System.Globalization.CultureInfo.InvariantCulture))
+				.ToList();
 			ENABLE_RESPAWN_POINTS = config.Bind<bool>("Respawn", "enableRespawnPoint", true, "If enabled admins can spawn a custom respawn point by using the command '.rps sp' and user can then use set it as a respawn point using '.rsp set' this will only work when near the respawnpoint.");
 			ENABLE_NONADMIN_RESPAWNPOINT_SPAWNING = config.Bind<bool>("Respawn", "enableNonAdminRespawnPointSpawning", false, "If enabled non admins can also spawn a respawnpoint limited to X amount defined below.");
 			ENABLE_PREDEFINED_RESPAWN_POINTS = config.Bind<bool>("Respawn", "enablePredefinedRespawnPoints", true, "If enabled a json file in '\\BepInEx\\config\\Respawns\\respawns.json' can be edited with a list of coordinates where the respawnpoints will be placed, each player will then get ownership of each instance of a respawnpoint at those locations (if a player logs in another instance of the respawnpoint will be created at the same location and vice versa when logging out).");
