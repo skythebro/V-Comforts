@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using ProjectM;
 using ProjectM.Network;
 using ProjectM.Shared;
@@ -8,7 +7,6 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using VAMP;
-using VampireCommandFramework;
 
 namespace VrisingQoL.Managers
 {
