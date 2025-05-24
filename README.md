@@ -20,24 +20,24 @@ A V-Rising mod adding quality-of-life features like auto fishing, inventory stac
 
 All settings are available in the BepInEx config file:
 
-| Section        | Setting                              | Description                                                                                     | Default                         |
-|----------------|--------------------------------------|-------------------------------------------------------------------------------------------------|---------------------------------|
-| BloodMixer     | `enableBloodmixerExtraBottle`        | Gives a glass bottle back when mixing 2 blood potions.                                          | `false`                         |
-| Fishing        | `enableAutoFish`                     | Fish will automatically be caught whenever a splash happens.                                    | `false`                         |
-| InventoryBonus | `enableInventoryBonus`               | Bonus to inventory stack size based on equipped bag.                                            | `false`                         |
-| InventoryBonus | `bagInventoryBonusMultiplier`        | Inventory stack size bonus multipliers per bag tier (max stack size clamped to 4095).           | `1.05,1.10,1.15,1.20,1.25,1.30` |
-| LevelBonus     | `enableLevelBonus`                   | Bonus to stats based on your level.                                                             | `false`                         |
-| LevelBonus     | `levelBonusMultiplier`               | Level bonus multipliers per stat: resourceYieldBonus, moveSpeedBonus, shapeshiftMoveSpeedBonus. | `0.005,0.003,0.0035`            |
-| Respawn        | `enableRespawnPoint`                 | Admins can spawn and set custom respawn points.                                                 | `false`                         |
-| Respawn        | `enableNonAdminRespawnPointSpawning` | Non-admins can also spawn respawn points (limited).                                             | `false`                         |
-| Respawn        | `enablePredefinedRespawnPoints`      | Enables predefined respawn points from a JSON file.                                             | `false`                         |
-| Respawn        | `enableRespawnPointBreakage`         | Respawn points break after 1 use.                                                               | `false`                         |
-| Respawn        | `respawnPointLimit`                  | Limit of respawn points for non-admins (`0` = unlimited).                                       | `1`                             |
-| Respawn        | `respawnPointCostAmount`             | Amount of item required to spawn a respawn point.                                               | `1`                             |
-| Respawn        | `respawnPointCostItemPrefab`         | Prefab ID of the required item.                                                                 | `271594022`                     |
-| Respawn        | `respawnPointPrefab`                 | Prefab ID of the respawn point.                                                                 | `-55079755`                     |
-| Respawn        | `respawnAnimationPrefab`             | Prefab ID of the respawn animation.                                                             | `1290990039`                    |
-| Carriage       | `enableCarriageTracking`             | Carriages will be tracked and shown on the map.                                                 | `false`                         |
+| Section        | Setting                              | Description                                                                                            | Default                         |
+|----------------|--------------------------------------|--------------------------------------------------------------------------------------------------------|---------------------------------|
+| BloodMixer     | `enableBloodmixerExtraBottle`        | Gives a glass bottle back when mixing 2 blood potions.                                                 | `false`                         |
+| Fishing        | `enableAutoFish`                     | Fish will automatically be caught whenever a splash happens.                                           | `false`                         |
+| InventoryBonus | `enableInventoryBonus`               | Bonus to inventory stack size based on equipped bag.                                                   | `false`                         |
+| InventoryBonus | `bagInventoryBonusMultiplier`        | Inventory stack size bonus multipliers per bag tier (max stack size clamped to 4095).                  | `1.05,1.10,1.15,1.20,1.25,1.30` |
+| LevelBonus     | `enableLevelBonus`                   | Bonus to stats based on your level.                                                                    | `false`                         |
+| LevelBonus     | `levelBonusMultiplier`               | Level bonus addition per level per stat: resourceYieldBonus, moveSpeedBonus, shapeshiftMoveSpeedBonus. | `0.005,0.003,0.0035`            |
+| Respawn        | `enableRespawnPoint`                 | Admins can spawn and set custom respawn points.                                                        | `false`                         |
+| Respawn        | `enableNonAdminRespawnPointSpawning` | Non-admins can also spawn respawn points (limited).                                                    | `false`                         |
+| Respawn        | `enablePredefinedRespawnPoints`      | Enables predefined respawn points from a JSON file.                                                    | `false`                         |
+| Respawn        | `enableRespawnPointBreakage`         | Respawn points break after 1 use.                                                                      | `false`                         |
+| Respawn        | `respawnPointLimit`                  | Limit of respawn points for non-admins (`0` = unlimited).                                              | `1`                             |
+| Respawn        | `respawnPointCostAmount`             | Amount of item required to spawn a respawn point.                                                      | `1`                             |
+| Respawn        | `respawnPointCostItemPrefab`         | Prefab ID of the required item.                                                                        | `271594022`                     |
+| Respawn        | `respawnPointPrefab`                 | Prefab ID of the respawn point.                                                                        | `-55079755`                     |
+| Respawn        | `respawnAnimationPrefab`             | Prefab ID of the respawn animation.                                                                    | `1290990039`                    |
+| Carriage       | `enableCarriageTracking`             | Carriages will be tracked and shown on the map.                                                        | `false`                         |
 
 ## Predefined Respawn Points
 
