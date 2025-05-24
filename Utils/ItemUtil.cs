@@ -10,7 +10,7 @@ using Unity.Transforms;
 using VAMP;
 using VampireCommandFramework;
 
-namespace VrisingQoL;
+namespace VComforts;
 
 public static class ItemUtil
 {

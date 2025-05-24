@@ -11,9 +11,9 @@ using Unity.Transforms;
 using UnityEngine;
 using VAMP;
 using VAMP.Data;
-using VrisingQoL.Utils;
+using VComforts.Utils;
 
-namespace VrisingQoL.Patches;
+namespace VComforts.Patches;
 
 using HarmonyLib;
 using ProjectM;
@@ -23,12 +23,11 @@ public static class BuffSystem_Spawn_Server_OnUpdate_Patch
 {
     private static DateTime _noUpdateBefore = DateTime.MinValue;
     private static readonly PrefabGUID MarkerIcon = Prefabs.MapIcon_POI_Discover_Merchant;
-    private static DateTime _nextLevelBuffUpdate = DateTime.MinValue;
 
 
     static void Postfix(BuffSystem_Spawn_Server __instance)
     {
-        if (Settings.ENABLE_CARRIAGE_TRACKING.Value)
+        if (Settings.ENABLE_CARRIAGE_TRACKING.Value) // move somewhere else
         {
             if (_noUpdateBefore <= DateTime.Now)
             {
@@ -97,11 +96,13 @@ public static class BuffSystem_Spawn_Server_OnUpdate_Patch
                         if (target == carriage)
                         {
                             foundIcon = true;
+#if DEBUG
                             Plugin.LogInstance.LogWarning(
                                 $"Carriage at {carriage.Read<LocalToWorld>().Position} already has map icon: {icon.Index}");
                             Plugin.LogInstance.LogWarning($"MapIcon Translation: {icon.Read<Translation>().Value}");
                             Plugin.LogInstance.LogWarning(
                                 $"MapIcon LocalToWorld: {icon.Read<LocalToWorld>().Position}");
+#endif
                             break;
                         }
                     }
@@ -116,10 +117,11 @@ public static class BuffSystem_Spawn_Server_OnUpdate_Patch
                             Plugin.LogInstance.LogWarning($"carriage at {position} is outside the map bounds.");
                             continue;
                         }
-
+#if DEBUG
                         Plugin.LogInstance.LogWarning("Carriage inside map at: " +
                                                       carriage.Read<LocalToWorld>().Position);
                         Plugin.LogInstance.LogWarning("Found carriage checking map icon");
+#endif
                         if (!carriage.TryGetBuffer<AttachMapIconsToEntity>(out var iconBuffer) ||
                             !BufferContainsIcon(iconBuffer, MarkerIcon))
                         {
@@ -130,23 +132,31 @@ public static class BuffSystem_Spawn_Server_OnUpdate_Patch
                             {
                                 Prefab = MarkerIcon
                             });
+#if DEBUG
                             Plugin.LogInstance.LogWarning("Added new map icon to carriage.");
+#endif
                         }
+#if DEBUG
                         else
                         {
                             Plugin.LogInstance.LogWarning("Carriage already has this map icon.");
                         }
+#endif
 
                         var carriagePosition = carriage.Read<LocalToWorld>().Position;
                         var translation = carriage.Read<Translation>().Value;
                         float3 spawnPosition = new float3(carriagePosition.x, translation.y, carriagePosition.z);
                         if (!Core.EntityManager.Exists(carriage))
                         {
+#if DEBUG
                             Plugin.LogInstance.LogWarning("Carriage entity no longer exists.");
+#endif
                         }
                         else if (!carriage.Has<LocalToWorld>())
                         {
+#if DEBUG
                             Plugin.LogInstance.LogWarning("Carriage entity missing LocalToWorld.");
+#endif
                         }
                         else
                         {
@@ -179,127 +189,6 @@ public static class BuffSystem_Spawn_Server_OnUpdate_Patch
                 }
             }
         }
-
-        if (Settings.ENABLE_LEVEL_BONUS.Value || Settings.ENABLE_INVENTORY_BONUS.Value)
-        {
-            _nextLevelBuffUpdate = DateTime.Now.AddMilliseconds(100);
-            var entityManager = Core.EntityManager;
-            var queryBuilder = new EntityQueryBuilder(Allocator.Temp)
-                .AddAll(ComponentType.ReadWrite<VampireSpecificAttributes>())
-                .AddAll(ComponentType.ReadOnly<PlayerCharacter>())
-                .AddAll(ComponentType.ReadOnly<InventoryInstanceElement>())
-                .AddAll(ComponentType.ReadWrite<Equipment>());
-            var query = entityManager.CreateEntityQuery(ref queryBuilder);
-            var players = query.ToEntityArray(Allocator.Temp);
-            foreach (var player in players)
-            {
-                if (Settings.ENABLE_LEVEL_BONUS.Value)
-                    HandleLevelBuffs(player);
-                if (Settings.ENABLE_INVENTORY_BONUS.Value)
-                    HandleInventoryBuffs(player);
-            }
-        }
-    }
-
-    private const float BaseResourceYield = 1f;
-    private const float BaseMoveSpeed = 0f;
-    private const float BaseShapeshiftMoveSpeed = 0f;
-
-    static void HandleLevelBuffs(Entity entity)
-    {
-        var equipment = Core.EntityManager.GetComponentData<Equipment>(entity);
-        var attributes = Core.EntityManager.GetComponentData<VampireSpecificAttributes>(entity);
-
-        // Calculate own bonuses
-        int playerLevel = equipment.GetPlayerLevel();
-        if (Settings.LEVEL_BONUS_MULTIPLIER.Count != 3)
-        {
-            Plugin.LogInstance.LogError("LEVEL_BONUS_MULTIPLIER must have 3 values!");;
-            return;
-        }
-        
-        float resourceYieldBonus = playerLevel * Settings.LEVEL_BONUS_MULTIPLIER[0]; // make multiplier customizable?
-        float moveSpeedBonus = playerLevel * Settings.LEVEL_BONUS_MULTIPLIER[1];
-        float shapeshiftMoveSpeedBonus = playerLevel * Settings.LEVEL_BONUS_MULTIPLIER[2];
-
-        // Add bonus to the current value
-        attributes.ResourceYieldModifier._Value = BaseResourceYield + resourceYieldBonus;
-        attributes.BonusMovementSpeed._Value = BaseMoveSpeed + moveSpeedBonus;
-        attributes.BonusShapeshiftMovementSpeed._Value = BaseShapeshiftMoveSpeed + shapeshiftMoveSpeedBonus;
-
-        Core.EntityManager.SetComponentData(entity, attributes);
-    }
-
-    static void HandleInventoryBuffs(Entity entity)
-    {
-        var inventoryInstanceBuffer = Core.EntityManager.GetBuffer<InventoryInstanceElement>(entity);
-        var equipment = Core.EntityManager.GetComponentData<Equipment>(entity);
-        var bagSlot = equipment.BagSlot;
-
-        if (Settings.BAG_INVENTORY_BONUS_MULTIPLIER.Count != 6)
-        {
-            Plugin.LogInstance.LogError("BAG_INVENTORY_BONUS_MULTIPLIER must have 6 values!");
-            return;
-        }
-
-        float bagMultiplier = 1.0f;
-        if (!bagSlot.IsBroken)
-        {
-            if (bagSlot.SlotEntity.GetSyncedEntityOrNull() != Entity.Null)
-            {
-                if (bagSlot.SlotId.Equals(Prefabs.Item_NewBag_T01))
-                    bagMultiplier = Settings.BAG_INVENTORY_BONUS_MULTIPLIER[0];
-                else if (bagSlot.SlotId.Equals(Prefabs.Item_NewBag_T02))
-                    bagMultiplier = Settings.BAG_INVENTORY_BONUS_MULTIPLIER[1];
-                else if (bagSlot.SlotId.Equals(Prefabs.Item_NewBag_T03))
-                    bagMultiplier = Settings.BAG_INVENTORY_BONUS_MULTIPLIER[2];
-                else if (bagSlot.SlotId.Equals(Prefabs.Item_NewBag_T04))
-                    bagMultiplier = Settings.BAG_INVENTORY_BONUS_MULTIPLIER[3];
-                else if (bagSlot.SlotId.Equals(Prefabs.Item_NewBag_T05))
-                    bagMultiplier = Settings.BAG_INVENTORY_BONUS_MULTIPLIER[4];
-                else if (bagSlot.SlotId.Equals(Prefabs.Item_NewBag_T06))
-                    bagMultiplier = Settings.BAG_INVENTORY_BONUS_MULTIPLIER[5];
-            }
-        }
-
-
-        foreach (var inventoryInstance in inventoryInstanceBuffer)
-        {
-            var externalInventoryEntity = inventoryInstance.ExternalInventoryEntity;
-            if (externalInventoryEntity.GetSyncedEntityOrNull() == Entity.Null) continue;
-
-            var inventoryBuffer =
-                Core.EntityManager.GetBuffer<InventoryBuffer>(externalInventoryEntity.GetSyncedEntityOrNull());
-
-            for (int i = 0; i < inventoryBuffer.Length; i++)
-            {
-                var slot = inventoryBuffer[i];
-
-                int baseStackSize = 0;
-                if (slot.ItemEntity.GetSyncedEntityOrNull() == Entity.Null)
-                {
-                    var key = new PrefabGUID() { _Value = slot.ItemType._Value };
-                    if (Core.SystemService.PrefabCollectionSystem._PrefabLookupMap.TryGetValue(key, out var prefab))
-                    {
-                        if (prefab.TryGetComponent<ItemData>(out var itemData))
-                        {
-                            baseStackSize = itemData.MaxAmount;
-                        }
-                    }
-                }
-                slot.MaxAmountOverride = (int)(baseStackSize * bagMultiplier);
-                inventoryBuffer[i] = slot;
-            }
-        }
-    }
-    
-    static int GetPlayerLevel(this Equipment equipment)
-    {
-        int weaponLevel = (int)Math.Round(equipment.WeaponLevel);
-        int armorLevel = (int)Math.Round(equipment.ArmorLevel);
-        int spellLevel = (int)Math.Round(equipment.SpellLevel);
-
-        return weaponLevel + armorLevel + spellLevel;
     }
 
     private static void patrolChanger()
@@ -339,6 +228,7 @@ public static class BuffSystem_Spawn_Server_OnUpdate_Patch
                 }
             }
         }
+        
     }
 
     private static bool BufferContainsIcon(DynamicBuffer<AttachMapIconsToEntity> buffer, PrefabGUID markerIcon)

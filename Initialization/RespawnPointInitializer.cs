@@ -4,7 +4,7 @@ using Unity.Collections;
 using Unity.Entities;
 using VAMP;
 
-namespace VrisingQoL.Initialization
+namespace VComforts.Initialization
 {
     public static class RespawnPointInitializer
     {

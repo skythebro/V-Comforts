@@ -5,7 +5,7 @@ using Unity.Entities;
 using VAMP;
 using VAMP.Data;
 
-namespace VrisingQoL;
+namespace VComforts;
 
 public class BuffUtil
 {
@@ -13,7 +13,7 @@ public class BuffUtil
     public static PrefabGUID InCombat = Prefabs.Buff_InCombat;
     public static PrefabGUID InCombat_PvP = Prefabs.Buff_InCombat_PvPVampire;
 
-    
+    // to use for placing spawns
     public static bool IsPlayerInCombat(Entity player)
     {
         return BuffUtility.HasBuff(entityManager, player, InCombat) || BuffUtility.HasBuff(entityManager, player, InCombat_PvP);

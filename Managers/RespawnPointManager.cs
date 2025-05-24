@@ -8,7 +8,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using VAMP;
 
-namespace VrisingQoL.Managers
+namespace VComforts.Managers
 {
     public class RespawnPointManager
     {
@@ -94,12 +94,16 @@ namespace VrisingQoL.Managers
                     }
                 }
             }
-
+#if DEBUG
             Plugin.LogInstance.LogWarning("Closest respawn point distance: " + closestRespawnPointDistance);
+#endif
             if (closestRespawnPointEntity != Entity.Null)
             {
+#if DEBUG
                 Plugin.LogInstance.LogWarning("Closest respawn point entity found: " +
-                                              closestRespawnPointEntity.GetPrefabGuidName());
+                            closestRespawnPointEntity.GetPrefabGuidName());
+#endif
+                                              
                 // Assign the closest respawn point to the user
                 if (!entityManager.HasComponent<Networked>(closestRespawnPointEntity))
                     closestRespawnPointEntity.Add<Networked>();
@@ -108,9 +112,12 @@ namespace VrisingQoL.Managers
                 respawnPointComponent.RespawnPointOwner = user;
                 respawnPointComponent.HasRespawnPointOwner = true;
                 closestRespawnPointEntity.Write(respawnPointComponent);
+                
+#if DEBUG
                 Plugin.LogInstance.LogWarning("Respawn point owner set to user: " +
                                               respawnPointComponent.RespawnPointOwner.GetSyncedEntityOrNull()
                                                   .GetUser().PlatformId);
+#endif
 
                 // Clear ownership from other spawn points owned by the user
                 foreach (var entity in respawnPoints)
@@ -131,7 +138,9 @@ namespace VrisingQoL.Managers
                 var respawnPointOwnerBuffer = user.ReadBuffer<RespawnPointOwnerBuffer>();
                 if (respawnPointOwnerBuffer.Length == 0)
                 {
+#if DEBUG
                     Plugin.LogInstance.LogInfo("Respawn point owner buffer empty, adding buffer item.");
+#endif
                     respawnPointOwnerBuffer.Add(new RespawnPointOwnerBuffer
                     {
                         RespawnPoint = closestRespawnPointEntity,
@@ -152,7 +161,9 @@ namespace VrisingQoL.Managers
                 return true;
             }
 
+#if DEBUG
             Plugin.LogInstance.LogWarning("No respawn points found.");
+#endif
             return false;
         }
     }

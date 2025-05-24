@@ -8,10 +8,10 @@ using Unity.Entities;
 using Unity.Transforms;
 using VAMP;
 using VampireCommandFramework;
-using VrisingQoL.Database;
-using VrisingQoL.Patches;
+using VComforts.Database;
+using VComforts.Patches.Connection;
 
-namespace VrisingQoL.VCFCompat
+namespace VComforts.VCFCompat
 {
     public static partial class Commands
     {

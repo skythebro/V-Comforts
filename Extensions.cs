@@ -14,10 +14,10 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using VAMP;
-using VrisingQoL.Services;
-using VrisingQoL.Systems;
+using VComforts.Services;
+using VComforts.Systems;
 
-namespace VrisingQoL;
+namespace VComforts;
 internal static class Extensions
 {
     static EntityManager EntityManager => Core.EntityManager;

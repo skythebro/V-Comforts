@@ -2,7 +2,7 @@
 using System.Linq;
 using BepInEx.Configuration;
 
-namespace VrisingQoL
+namespace VComforts
 {
 	public static class Settings
 	{
@@ -30,25 +30,25 @@ namespace VrisingQoL
 
 		internal static void Initialize(ConfigFile config)
 		{
-			ENABLE_BLOODMIXER_EXTRA_BOTTLE = config.Bind<bool>("BloodMixer", "enableBloodmixerExtraBottle", true, "If enabled gives you a glass bottle back when mixing 2 blood potions.");
-			ENABLE_AUTOFISH = config.Bind<bool>("Fishing", "enableAutoFish", true, "If enabled fish will automatically be caught whenever a splash happens");
+			ENABLE_BLOODMIXER_EXTRA_BOTTLE = config.Bind<bool>("BloodMixer", "enableBloodmixerExtraBottle", false, "If enabled gives you a glass bottle back when mixing 2 blood potions.");
+			ENABLE_AUTOFISH = config.Bind<bool>("Fishing", "enableAutoFish", false, "If enabled fish will automatically be caught whenever a splash happens");
 			ENABLE_CARRIAGE_TRACKING = config.Bind<bool>("Carriage", "enableCarriageTracking", false, "If enabled carriages will be tracked and shown on the map.");
 			
-			ENABLE_LEVEL_BONUS = config.Bind<bool>("LevelBonus", "enableLevelBonus", true, "If enabled you will get a bonus to your stats based on your level, value defined below.");
+			ENABLE_LEVEL_BONUS = config.Bind<bool>("LevelBonus", "enableLevelBonus", false, "If enabled you will get a bonus to your stats based on your level, value defined below.");
 			LEVEL_BONUS_MULTIPLIER_STRING = config.Bind<string>("LevelBonus", "levelBonusMultiplier", "0.005,0.003,0.0035", "Sets the level bonus multiplier per level for each stat in the following order: resourceYieldBonus, moveSpeedBonus, shapeshiftMoveSpeedBonus");
 			LEVEL_BONUS_MULTIPLIER = LEVEL_BONUS_MULTIPLIER_STRING.Value
 				.Split(',')
 				.Select(s => float.Parse(s.Trim(), System.Globalization.CultureInfo.InvariantCulture))
 				.ToList();
-			ENABLE_INVENTORY_BONUS = config.Bind<bool>("InventoryBonus", "enableInventoryBonus", true, "If enabled you will get a bonus to your inventory stack size based on your equipped bag, value defined below.");
-			BAG_INVENTORY_BONUS_MULTIPLIER_STRING = config.Bind<string>("InventoryBonus", "bagInventoryBonusMultiplier", "1.05,1.15,1.3,1.5,1.75,2.5", "Sets the inventory bonus multiplier per level for each bag in the following order: resourceYieldBonus, moveSpeedBonus, shapeshiftMoveSpeedBonus");
+			ENABLE_INVENTORY_BONUS = config.Bind<bool>("InventoryBonus", "enableInventoryBonus", false, "If enabled you will get a bonus to your inventory stack size based on your equipped bag, value defined below.");
+			BAG_INVENTORY_BONUS_MULTIPLIER_STRING = config.Bind<string>("InventoryBonus", "bagInventoryBonusMultiplier", "1.05,1.10,1.15,1.20,1.25,1.30", "Sets the inventory bonus multiplier per level for each bag in the following order: resourceYieldBonus, moveSpeedBonus, shapeshiftMoveSpeedBonus");
 			BAG_INVENTORY_BONUS_MULTIPLIER = BAG_INVENTORY_BONUS_MULTIPLIER_STRING.Value
 				.Split(',')
 				.Select(s => float.Parse(s.Trim(), System.Globalization.CultureInfo.InvariantCulture))
 				.ToList();
-			ENABLE_RESPAWN_POINTS = config.Bind<bool>("Respawn", "enableRespawnPoint", true, "If enabled admins can spawn a custom respawn point by using the command '.rps sp' and user can then use set it as a respawn point using '.rsp set' this will only work when near the respawnpoint.");
+			ENABLE_RESPAWN_POINTS = config.Bind<bool>("Respawn", "enableRespawnPoint", false, "If enabled admins can spawn a custom respawn point by using the command '.rps sp' and user can then use set it as a respawn point using '.rsp set' this will only work when near the respawnpoint.");
 			ENABLE_NONADMIN_RESPAWNPOINT_SPAWNING = config.Bind<bool>("Respawn", "enableNonAdminRespawnPointSpawning", false, "If enabled non admins can also spawn a respawnpoint limited to X amount defined below.");
-			ENABLE_PREDEFINED_RESPAWN_POINTS = config.Bind<bool>("Respawn", "enablePredefinedRespawnPoints", true, "If enabled a json file in '\\BepInEx\\config\\Respawns\\respawns.json' can be edited with a list of coordinates where the respawnpoints will be placed, each player will then get ownership of each instance of a respawnpoint at those locations (if a player logs in another instance of the respawnpoint will be created at the same location and vice versa when logging out).");
+			ENABLE_PREDEFINED_RESPAWN_POINTS = config.Bind<bool>("Respawn", "enablePredefinedRespawnPoints", false, "If enabled a json file in '\\BepInEx\\config\\Respawns\\respawns.json' can be edited with a list of coordinates where the respawnpoints will be placed, each player will then get ownership of each instance of a respawnpoint at those locations (if a player logs in another instance of the respawnpoint will be created at the same location and vice versa when logging out).");
 			ENABLE_RESPAWN_POINT_BREAKAGE = config.Bind<bool>("Respawn", "enableRespawnPointBreakage", false, "If enabled respawn points will break after 1 use, best used with 'ENABLE_NONADMIN_RESPAWNPOINT_SPAWNING' as predefined portals will not just respawn. (changes the AB_Interact prefab to the waygate one that creates and explosion which breaks the respawnpoint, PS: do not place respawnpoints near other respawnpoints as they will break each other, I will fix this if I can find a way.)");
 			RESPAWN_POINT_LIMIT = config.Bind<int>("Respawn", "respawnPointLimit", 1, "Sets the limit of respawn points that can be spawned by non admins. (if 0 it will not limit anything!)");
 			RESPAWN_POINT_COST_AMOUNT = config.Bind<int>("Respawn", "respawnPointCostAmount", 1, "If above 0, respawn points will cost X amount of prefabitem defined below. (if 0 it will not cost anything)");

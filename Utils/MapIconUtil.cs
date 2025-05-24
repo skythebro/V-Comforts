@@ -8,13 +8,15 @@ using Unity.Transforms;
 using VAMP;
 using VAMP.Data;
 
-namespace VrisingQoL.Utils;
+namespace VComforts.Utils;
 
 public class MapIconUtil
 {
     public static void SpawnMapIcon(PrefabGUID unitPrefab, float3 position, Entity targetEntity)
     {
+#if DEBUG
         Plugin.LogInstance.LogWarning("Spawning with prefab: " + unitPrefab +" at position: " + position);
+#endif        
         VAMP.Services.SpawnService.SpawnUnitWithCallback(unitPrefab, position, -1, entity =>
         {
             if (!entity.Has<MapIconData>())
@@ -54,10 +56,12 @@ public class MapIconUtil
             entity.Write(playerMapIcon);
             entity.Write(targetEntity.Read<LocalToWorld>());
             entity.Write(targetEntity.Read<Translation>());
+#if DEBUG
             Plugin.LogInstance.LogWarning("Prefab name of mapIcon: " + entity.GetPrefabGuidName());
             Plugin.LogInstance.LogWarning("MapIcon LocalToWorld: " + entity.Read<LocalToWorld>().Position);
             Plugin.LogInstance.LogWarning("MapIcon Translation: " + entity.Read<Translation>().Value);
-        });
+#endif
+});
     }
 
 

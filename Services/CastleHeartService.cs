@@ -5,7 +5,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using VAMP;
 
-namespace VrisingQoL.Services;
+namespace VComforts.Services;
 
 public class CastleHeartService
 {

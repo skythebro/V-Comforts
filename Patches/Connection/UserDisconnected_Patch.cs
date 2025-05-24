@@ -2,9 +2,9 @@ using HarmonyLib;
 using ProjectM;
 using ProjectM.Network;
 using Stunlock.Network;
-using VrisingQoL.Database;
+using VComforts.Database;
 
-namespace VrisingQoL.Patches;
+namespace VComforts.Patches.Connection;
 
 [HarmonyPatch]
 public static class UserDisconnected_Patch

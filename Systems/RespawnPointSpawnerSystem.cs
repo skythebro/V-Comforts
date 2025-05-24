@@ -1,9 +1,9 @@
 using Unity.Entities;
 using Unity.Mathematics;
-using VrisingQoL.Factory;
-using VrisingQoL.Managers;
+using VComforts.Factory;
+using VComforts.Managers;
 
-namespace VrisingQoL.Systems
+namespace VComforts.Systems
 {
     public class RespawnPointSpawnerSystem
     {

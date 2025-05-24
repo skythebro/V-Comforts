@@ -1,22 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <AssemblyName>VrisingQoL</AssemblyName>
-        <Description>Server side mod to show locations of carriages</Description>
-        <Version>0.1.7</Version>
+        <AssemblyName>VComforts</AssemblyName>
+        <Description>Server side QoL mod</Description>
+        <Version>0.0.1</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
-        <RootNamespace>VrisingQoL</RootNamespace>
-        <AssemblyVersion>0.1.7.0</AssemblyVersion>
-        <FileVersion>0.1.7.0</FileVersion>
-        <InformationalVersion>0.1.7+1.Branch.main.Sha.a322c9fb3b6e06343e3dfa71f39a27988d15f262</InformationalVersion>
+        <RootNamespace>VComforts</RootNamespace>
+        <AssemblyVersion>0.0.1.0</AssemblyVersion>
+        <FileVersion>0.0.1.0</FileVersion>
+        <InformationalVersion>0.0.1+1.Branch.main.Sha.a322c9fb3b6e06343e3dfa71f39a27988d15f262</InformationalVersion>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.735" IncludeAssets="compile" />
         <PackageReference Include="BepInEx.Core" Version="6.0.0-be.735" IncludeAssets="compile" />
         <PackageReference Include="BepInEx.PluginInfoProps" Version="2.1.0" />
         <PackageReference Include="VRising.Unhollowed.Client" Version="1.1.7.9169101" />
-        <PackageReference Include="VRising.VAMP" Version="0.3.4" />
+        <PackageReference Include="VRising.VAMP" Version="1.0.0" />
         <PackageReference Include="VRising.VampireCommandFramework" Version="0.10.2" />
     </ItemGroup>
 </Project>

@@ -6,7 +6,7 @@ using Unity.Collections;
 using Unity.Entities;
 using VAMP;
 
-namespace VrisingQoL.Patches;
+namespace VComforts.Patches;
 
 [HarmonyPatch(typeof(BloodMixerSystem_Update), "OnUpdate")]
 public class BloodMixerSystem_UpdatePatch
@@ -17,7 +17,7 @@ public class BloodMixerSystem_UpdatePatch
     
     static void Postfix(BloodMixerSystem_Update __instance)
     {
-        if (!Settings.ENABLE_BLOODMIXER_EXTRA_BOTTLE.Value)
+        if (Settings.ENABLE_BLOODMIXER_EXTRA_BOTTLE == null || !Settings.ENABLE_BLOODMIXER_EXTRA_BOTTLE.Value)
         {
             return;
         }
@@ -50,7 +50,9 @@ public class BloodMixerSystem_UpdatePatch
                     }
                     if (newPotion)
                     {
+#if DEBUG
                         Plugin.LogInstance.LogInfo("Adding glass bottle to inventory");
+#endif
                         ItemUtil.AddItemToInventory(mixer, glassBottlePrefabGuid, 1);
                     }
                 }

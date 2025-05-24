@@ -12,9 +12,9 @@ using Unity.Physics;
 using Unity.Transforms;
 using UnityEngine;
 using VAMP;
-using VrisingQoL.Initialization;
+using VComforts.Initialization;
 
-namespace VrisingQoL.Factory
+namespace VComforts.Factory
 {
     public class RespawnPointFactory
     {

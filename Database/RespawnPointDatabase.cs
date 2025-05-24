@@ -2,9 +2,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using Unity.Mathematics;
-using VrisingQoL.Patches;
+using VComforts.Patches.Connection;
+using VComforts.Patches;
 
-namespace VrisingQoL.Database;
+namespace VComforts.Database;
 
 public static class RespawnPointDatabase
 {
