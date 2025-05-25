@@ -3,13 +3,13 @@
         <TargetFramework>net6.0</TargetFramework>
         <AssemblyName>VComforts</AssemblyName>
         <Description>Server side QoL mod</Description>
-        <Version>0.0.1</Version>
+        <Version>0.0.2</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
         <RootNamespace>VComforts</RootNamespace>
-        <AssemblyVersion>0.0.1.0</AssemblyVersion>
-        <FileVersion>0.0.1.0</FileVersion>
-        <InformationalVersion>0.0.1+1.Branch.main.Sha.a322c9fb3b6e06343e3dfa71f39a27988d15f262</InformationalVersion>
+        <AssemblyVersion>0.0.2.0</AssemblyVersion>
+        <FileVersion>0.0.2.0</FileVersion>
+        <InformationalVersion>0.0.2+1.Branch.main.Sha.a322c9fb3b6e06343e3dfa71f39a27988d15f262</InformationalVersion>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.735" IncludeAssets="compile" />
