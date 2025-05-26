@@ -106,7 +106,7 @@ public static class InitializePlayer_Patch
             if (value.ItemType == ItemType.Stackable) //should make sure that stackable type contains all stackable items
             {
                 value.MaxAmount = (int)Math.Clamp(value.MaxAmount * multiplier, 1, 4095); // clamp to max visibile stack size
-            } else if (value.ItemType is ItemType.Consumable or ItemType.Jewel)
+            } else if (value.ItemType is ItemType.Jewel)
             {
                 // not the issue probably, but just in case
                 value.MaxAmount = 1;

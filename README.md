@@ -75,6 +75,8 @@ Special thanks to:
 * For more details, see the descriptions in the `VComforts.cfg` file.
 
 ### Extra features / todos?
+* Blood bottle sorting?
+* Plant to seed recipe?
 * Servant item pickup?  
 * check spawnpoint positions so they cannot be placed at bad positions?
 * add customizable name to mapicon of respawnpoint?
