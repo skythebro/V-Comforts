@@ -43,7 +43,7 @@ public static class TrySortInventoryPatch
     }
     else
     {
-        if (!target.IsPlayer()) return;
+        if (!target.IsPlayer() && !IsBloodPotionStorage(target)) return;
     }
     
     var attachedBuffer = target.ReadBuffer<AttachedBuffer>();

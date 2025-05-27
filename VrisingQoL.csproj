@@ -19,4 +19,15 @@
         <PackageReference Include="VRising.VAMP" Version="1.0.0" />
         <PackageReference Include="VRising.VampireCommandFramework" Version="0.10.2" />
     </ItemGroup>
+    <Target Name="CopyFilesOnRelease" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+        <ItemGroup>
+            <FilesToCopy Include="$(OutputPath)$(AssemblyName).dll" />
+            <FilesToCopy Include="README.md" />
+            <FilesToCopy Include="CHANGELOG.md" />
+        </ItemGroup>
+        <Copy
+                SourceFiles="@(FilesToCopy)"
+                DestinationFolder="C:\Users\bryan\Documents\v rising modding carreer\V rising modding\skies-VComforts\"
+                SkipUnchangedFiles="true" />
+    </Target>
 </Project>
