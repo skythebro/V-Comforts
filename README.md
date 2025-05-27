@@ -10,6 +10,7 @@ A V-Rising mod adding quality-of-life features like auto fishing, inventory stac
 - **Auto Fishing**: Automatically catch fish when a splash happens.
 - **Level Bonus**: Gain stat bonuses based on your level.
 - **Inventory Bonus**: Increase inventory stack size based on your equipped bag.
+- **Custom Blood Potion Sorting**: Sort blood potions in consumable and blood potion storages by primary blood type and quality.
 - **Custom Respawn Points**: Admins (and optionally non-admins) can spawn and set custom respawn points. (Very WIP only tested solo, so there can be team issues and such)
 - **Predefined Respawn Points**: Configure global respawn points via a JSON file.
 - **Respawn Point Breakage**: Respawn points can be set to break after use.
