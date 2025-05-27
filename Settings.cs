@@ -18,6 +18,7 @@ namespace VComforts
         public static List<float> BAG_INVENTORY_BONUS_MULTIPLIER { get; private set; }
 
         public static ConfigEntry<bool> ENABLE_CUSTOM_BLOODPOTION_SORTING { get; private set; }
+        public static ConfigEntry<bool> ENABLE_CUSTOM_BLOODPOTION_SORTING_PLAYER { get; private set; }
         public static ConfigEntry<bool> CUSTOM_BLOODPOTION_SORTING_PRIMARYTHENQUALITY { get; private set; }
 
         public static ConfigEntry<bool> ENABLE_RESPAWN_POINTS { get; private set; }
@@ -61,6 +62,11 @@ namespace VComforts
             ENABLE_CUSTOM_BLOODPOTION_SORTING = config.Bind<bool>("BloodPotionSorting",
                 "enableCustomBloodPotionSorting", false,
                 "If enabled blood potions will be sorted by primary blood type and then by quality.");
+            ENABLE_CUSTOM_BLOODPOTION_SORTING_PLAYER = config.Bind<bool>(
+                "BloodPotionSorting",
+                "enableCustomBloodPotionSortingPlayer",
+                false,
+                "If enabled, blood potions will also use the custom sorting in the player inventory.");
             CUSTOM_BLOODPOTION_SORTING_PRIMARYTHENQUALITY = config.Bind<bool>(
                 "BloodPotionSorting",
                 "customBloodPotionSortingPrimaryThenQuality",

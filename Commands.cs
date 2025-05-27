@@ -9,6 +9,7 @@ using Unity.Transforms;
 using VAMP;
 using VampireCommandFramework;
 using VComforts.Database;
+using VComforts.Managers;
 using VComforts.Patches.Connection;
 
 namespace VComforts.VCFCompat
@@ -74,6 +75,21 @@ namespace VComforts.VCFCompat
                     {
                         ctx.Reply("Respawn points are disabled in the config");
                         return;
+                    }
+
+                    if (Settings.RESPAWN_POINT_LIMIT.Value > 0 && !ctx.IsAdmin)
+                    {
+                        var count = RespawnPointDatabase.GetRespawnPointCount(ctx.Event.SenderUserEntity.GetUser()
+                            .PlatformId);
+                        if (count >= Settings.RESPAWN_POINT_LIMIT.Value)
+                        {
+                            ctx.Error(
+                                $"You have reached the limit of {Settings.RESPAWN_POINT_LIMIT.Value} respawn points. Please remove one before spawning a new one.");
+                            return;
+                        }
+
+                        ctx.Reply(
+                            $"You have {Settings.RESPAWN_POINT_LIMIT.Value - count} respawn points left.");
                     }
 
                     if (!ctx.IsAdmin && Settings.ENABLE_NONADMIN_RESPAWNPOINT_SPAWNING.Value)
@@ -174,7 +190,9 @@ namespace VComforts.VCFCompat
                     var player = userEntity.GetUser().LocalCharacter._Entity;
                     if (Core.EntityManager.TryGetComponentData<LocalToWorld>(player, out var localToWorld))
                     {
-                        bool hasSet = Extensions.RespawnPointSpawnerSystem.SetRespawnPoint(localToWorld.Position, userEntity, ctx.IsAdmin);
+                        bool hasSet =
+                            Extensions.RespawnPointSpawnerSystem.SetRespawnPoint(localToWorld.Position, userEntity,
+                                ctx.IsAdmin);
                         if (hasSet)
                         {
                             ctx.Reply("Set respawnpoint near " + userEntity.GetUser().CharacterName);
@@ -254,6 +272,13 @@ namespace VComforts.VCFCompat
                                 ctx.Reply($"Deleted respawnpoint near {userEntity.GetUser().CharacterName}'s location");
                                 RespawnPointDatabase.RemoveRespawnPoint(userEntity.GetUser().PlatformId,
                                     localToWorld.Position);
+                                if (Settings.RESPAWN_POINT_LIMIT.Value > 0 && !ctx.IsAdmin)
+                                {
+                                    var count = RespawnPointDatabase.GetRespawnPointCount(ctx.Event.SenderUserEntity.GetUser()
+                                        .PlatformId);
+                                    ctx.Reply(
+                                        $"You have {Settings.RESPAWN_POINT_LIMIT.Value - count} respawn points left.");
+                                }
                             }
                             else
                             {

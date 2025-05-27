@@ -36,11 +36,28 @@ public static class TrySortInventoryPatch
     static void Postfix(Entity target)
 {
     if (target == Entity.Null) return;
-    if (!IsBloodPotionStorage(target)) return;
-
+    if (!Settings.ENABLE_CUSTOM_BLOODPOTION_SORTING.Value) return;
+    if (!Settings.ENABLE_CUSTOM_BLOODPOTION_SORTING_PLAYER.Value)
+    {
+        if (!IsBloodPotionStorage(target)) return;
+    }
+    else
+    {
+        if (!target.IsPlayer()) return;
+    }
+    
     var attachedBuffer = target.ReadBuffer<AttachedBuffer>();
-    var invBuffer = attachedBuffer[0].Entity.ReadBuffer<InventoryBuffer>();
-
+    Entity? externalInventoryEntity = null;
+    foreach (var attached in attachedBuffer)
+    {
+        if (attached.Entity.GetPrefabGuid() == Prefabs.External_Inventory)
+        {
+            externalInventoryEntity = attached.Entity;
+            break;
+        }
+    }
+    if (externalInventoryEntity == null) return;
+    var invBuffer = externalInventoryEntity.Value.ReadBuffer<InventoryBuffer>();
     var potionSlots = new List<int>();
     var potions = new List<(InventoryBuffer item, string primaryType, float quality, bool hasSecondary, string secondaryType, float secondaryQuality, int originalIndex)>();
 

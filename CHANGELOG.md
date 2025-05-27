@@ -6,7 +6,9 @@
 - Added custom blood potion sorting feature with two modes:
     - Primary type, then quality (default)
     - Primary only first, then secondary (by type, secondary type, and both qualities)
+- Added option for players inventory to also have the custom blood potion sorting.
 - Added configuration options for blood potion sorting.
+- Added missing RESPAWN_POINT_LIMIT to commands, now limits will actually be adhered to.
 
 ### Changed
 - Updated README with detailed explanation and images for blood potion sorting.
