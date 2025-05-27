@@ -103,7 +103,7 @@ public static class InitializePlayer_Patch
         {
             var key = keys[i];
             var value = values[i];
-            if (value.ItemType == ItemType.Stackable) //should make sure that stackable type contains all stackable items
+            if (value.ItemType == ItemType.Stackable || (value.ItemType == ItemType.Consumable && value.ItemCategory != ItemCategory.BloodPotion)) //should make sure that stackable type contains all stackable items
             {
                 value.MaxAmount = (int)Math.Clamp(value.MaxAmount * multiplier, 1, 4095); // clamp to max visibile stack size
             } else if (value.ItemType is ItemType.Jewel)

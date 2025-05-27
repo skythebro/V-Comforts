@@ -55,6 +55,7 @@ public class Plugin : BasePlugin
     {
         VCFCompat.Commands.Unregister();
         Harmony?.UnpatchSelf();
+        HasInitialized = false;
         return true;
     }
 }
