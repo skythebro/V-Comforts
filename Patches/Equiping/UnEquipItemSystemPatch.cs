@@ -8,6 +8,7 @@ using Unity.Entities;
 using VAMP;
 using VComforts.Patches.Connection;
 using VComforts.Systems;
+using VComforts.Utils;
 
 namespace VComforts.Patches.Equiping;
 
@@ -16,6 +17,8 @@ public static class UnEquipItemSystemPatch
 {
     public static void Postfix(UnEquipItemSystem __instance)
     {
+        if (!Settings.ENABLE_INVENTORY_BONUS.Value && !Settings.ENABLE_LEVEL_BONUS.Value)
+            return;
         if (__instance._Query.IsEmpty)
             return;
 
@@ -23,28 +26,30 @@ public static class UnEquipItemSystemPatch
         {
             var fromCharacter = entity.Read<FromCharacter>();
             var unequipItemEvent = entity.Read<UnequipItemEvent>();
-
+            Plugin.LogInstance.LogWarning("unequipItemEvent item type: " + unequipItemEvent.EquipmentType);
             var networkIdSystem = Core.SystemService.NetworkIdSystem;
-            var playerEntity = unequipItemEvent.ToInventory
+            var inventoryEntity = unequipItemEvent.ToInventory
                 .GetNetworkedEntity(ref networkIdSystem._NetworkIdLookupMap).GetEntityOnServer();
-
-            if (playerEntity == Entity.Null)
-                continue;
-#if DEBUG
-            Plugin.LogInstance.LogWarning("Is player components?");
-            playerEntity.LogComponentTypes();
-#endif
             
-            var hasBuffer = playerEntity.TryGetBuffer<InventoryBuffer>(out var inventoryBuffer);
+            if (inventoryEntity == Entity.Null)
+            {
+#if DEBUG
+                Plugin.LogInstance.LogWarning("Inventory is null, getting inventory from character");
+#endif
+                inventoryEntity = fromCharacter.Character;
+            }
+
+            var hasBuffer = inventoryEntity.TryGetBuffer<InventoryBuffer>(out var inventoryBuffer);
             if (!hasBuffer)
             {
-                InventoryUtilitiesServer.TryGetInventoryBuffer(__instance.EntityManager, playerEntity, out inventoryBuffer);
+                InventoryUtilitiesServer.TryGetInventoryBuffer(__instance.EntityManager, inventoryEntity, out inventoryBuffer);
             }
             
             switch (unequipItemEvent.EquipmentType)
             {
                 case EquipmentType.Bag:
                 {
+                    if (!Settings.ENABLE_INVENTORY_BONUS.Value) break;
                     var customItemDataMap = InitializePlayer_Patch.GetUpdatedItemDataMap(fromCharacter.Character,
                         Core.SystemService.GameDataSystem._GameDatas.ItemHashLookupMap);
 
@@ -73,9 +78,9 @@ public static class UnEquipItemSystemPatch
                             var moveResponse = InventoryUtilitiesServer.TryMoveItem(
                                 __instance.EntityManager,
                                 customItemDataMap,
-                                playerEntity,
+                                inventoryEntity,
                                 i,
-                                playerEntity,
+                                inventoryEntity,
                                 j,
                                 true,
                                 default,
@@ -96,7 +101,7 @@ public static class UnEquipItemSystemPatch
                             __instance.EntityManager,
                             commandBuffer,
                             customItemDataMap,
-                            playerEntity,
+                            inventoryEntity,
                             invItemType,
                             excess
                         );
@@ -107,7 +112,13 @@ public static class UnEquipItemSystemPatch
                     break;
                 }
                 case EquipmentType.Gloves or EquipmentType.Chest or EquipmentType.Legs or EquipmentType.Footgear or EquipmentType.Weapon or EquipmentType.MagicSource:
-                    BonusSystem.HandleLevelBuffs(fromCharacter.Character);
+                    if (Settings.ENABLE_LEVEL_BONUS.Value)
+                    {
+#if DEBUG
+                        Plugin.LogInstance.LogWarning(unequipItemEvent.EquipmentType + " were unequipped, handling level buffs.");
+#endif
+                        DelayedUtil.RunLevelBuffsDelayed(fromCharacter.Character);
+                    }
                     break;
             }
         }

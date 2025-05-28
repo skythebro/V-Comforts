@@ -1,6 +1,6 @@
 # V-Comforts
 
-A V-Rising mod adding quality-of-life features like auto fishing, inventory stack size and per level stat bonuses, respawn point management and carriage tracking.
+A V-Rising mod adding quality-of-life features like auto fishing, inventory stack size and per level stat bonuses, respawn point management and more.
 
 > **Disclaimer:** Some features in this mod are experimental or not thoroughly tested and may have bugs. Feedback and bug reports are highly appreciated! (suggestions are also welcome!)
 

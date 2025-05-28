@@ -49,9 +49,23 @@ public static class InitializePlayer_Patch
             var platformId = user.PlatformId;
             
             // Create a custom item data map for the player
-            var customItemDataMap = GetUpdatedItemDataMap(player, Core.SystemService.GameDataSystem._GameDatas.ItemHashLookupMap);
+            if (Settings.ENABLE_INVENTORY_BONUS.Value)
+            {
+                var customItemDataMap = GetUpdatedItemDataMap(player, Core.SystemService.GameDataSystem._GameDatas.ItemHashLookupMap);
+                PlayerItemDataMaps[(int)platformId] = customItemDataMap;
+            }
+
+            BonusSystem.HandleInventoryBuffsOld(player);
+
+            if (Settings.ENABLE_LEVEL_BONUS.Value)
+            {
+                BonusSystem.HandleLevelBuffs(player);
+            }
+            else
+            {
+                BonusSystem.HandleLevelBuffs(player, true);
+            }
             
-            PlayerItemDataMaps[(int)platformId] = customItemDataMap;
             playerEntityIndices.Add(player.Index);
            
             if (!RespawnPointDatabase.IsInitialized(platformId))
@@ -83,17 +97,14 @@ public static class InitializePlayer_Patch
     {
         return GetUpdatedItemDataMap(player, originalItemDataMap, 1.0f);
     }
-    
-    public static NativeParallelHashMap<PrefabGUID, ItemData> GetUpdatedItemDataMap(Entity player, NativeParallelHashMap<PrefabGUID, ItemData> originalItemDataMap, float multiplier)
+
+    private static NativeParallelHashMap<PrefabGUID, ItemData> GetUpdatedItemDataMap(Entity player, NativeParallelHashMap<PrefabGUID, ItemData> originalItemDataMap, float multiplier)
     {
         if (Mathf.Approximately(multiplier, 1.0f))
         {
             multiplier = BonusSystem.GetBagMultiplier(player);
 
         }
-#if DEBUG
-        Plugin.LogInstance.LogWarning("Multiplier: " + multiplier);
-#endif
         var keys = originalItemDataMap.GetKeyArray(Allocator.Temp);
         var values = originalItemDataMap.GetValueArray(Allocator.Temp);
 
@@ -103,12 +114,14 @@ public static class InitializePlayer_Patch
         {
             var key = keys[i];
             var value = values[i];
-            if (value.ItemType == ItemType.Stackable || (value.ItemType == ItemType.Consumable && value.ItemCategory != ItemCategory.BloodPotion)) //should make sure that stackable type contains all stackable items
-            {
-                value.MaxAmount = (int)Math.Clamp(value.MaxAmount * multiplier, 1, 4095); // clamp to max visibile stack size
+            if (
+                value.ItemType == ItemType.Stackable ||
+                (value.ItemCategory & ItemCategory.Fish) != 0 ||
+                (value.ItemType == ItemType.Consumable && (value.ItemCategory & ItemCategory.BloodPotion) == 0)
+            )            {
+                value.MaxAmount = (int)Math.Clamp(value.MaxAmount * multiplier, 1, 4095); // clamp to max visible stack size
             } else if (value.ItemType is ItemType.Jewel)
             {
-                // not the issue probably, but just in case
                 value.MaxAmount = 1;
             }
             updatedItemDataMap[key] = value;

@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.0] - 2025-05-28
+- Fixed potion stacking and moving issues.
+- Fixed inventory stacking and splitting issues.
+- Fixed missing enabled checks for certain options.
+- Fixed level checks and streamlined inventory and level checks.
+- Fixed values not resetting when disabling level or inventory mod.
+- Fixed fishing issue? (I'm hoping this did it...)
+
+
 ## [0.0.4] - 2025-05-27
 
 ### Added

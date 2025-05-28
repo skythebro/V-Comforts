@@ -52,7 +52,7 @@ public static class BuffSystem_Spawn_Server_OnUpdate_Patch
                     }
                 }
 
-                patrolChanger();
+                PatrolChanger();
                 Plugin.LogInstance.LogWarning("Found " + carriages.Count + " carriage:");
                 foreach (var carriage in carriages)
                 {
@@ -169,28 +169,29 @@ public static class BuffSystem_Spawn_Server_OnUpdate_Patch
             }
         }
 
+        if (!Settings.ENABLE_AUTOFISH.Value)
+        {
+            // add has buff check? Maybe players still have a buff which is causing fishes to be not added?
+        }
+
         if (!Settings.ENABLE_AUTOFISH.Value || __instance._Query.IsEmpty) return;
         
         foreach (var buffs in __instance._Query.ToEntityArray(Allocator.Temp))
         {
-            if (buffs.GetBuffTarget().GetPrefabGuid() == new PrefabGUID(1559481073)) // fish
+            if (buffs.GetBuffTarget().GetPrefabGuid() != new PrefabGUID(1559481073)) continue; // fish
+            if (buffs.GetPrefabGuid() != new PrefabGUID(1753229314)) continue; // ready to catch
+            Entity owner = buffs.Read<EntityOwner>().Owner;
+            if (!owner.Has<PlayerCharacter>())
             {
-                if (buffs.GetPrefabGuid() == new PrefabGUID(1753229314)) // ready to catch
-                {
-                    Entity owner = buffs.Read<EntityOwner>().Owner;
-                    if (!owner.Has<PlayerCharacter>())
-                    {
-                        continue;
-                    }
-
-                    // buff owner is player so apply AB_Fishing_Draw_Buff to player
-                    BuffUtil.AddBuff(owner, new PrefabGUID(552896431), 1);
-                }
+                continue;
             }
+
+            // buff owner is player so apply AB_Fishing_Draw_Buff to player
+            BuffUtil.AddBuff(owner, new PrefabGUID(552896431), 1);
         }
     }
 
-    private static void patrolChanger()
+    private static void PatrolChanger()
     {
         // Query for possible controller entities
         var controllerQueryBuilder = new EntityQueryBuilder(Allocator.Temp)
